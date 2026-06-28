@@ -1,0 +1,30 @@
+# Large datasets
+dataset/
+dataset_yolo/
+
+# Training outputs
+runs/
+
+# Model weights
+*.pt
+
+# Cache & logs
+*.cache
+*.log
+*.npy
+
+# Claude internal
+.claude/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.eggs/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

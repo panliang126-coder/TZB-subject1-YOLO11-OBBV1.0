@@ -1,0 +1,67 @@
+# YOLO11-OBB-P2 增强版训练配置 (遥感车辆检测冲榜版)
+# 用法: yolo train cfg=configs/enhanced.yaml
+# 或:   python train.py --enhanced --fold 0
+
+task: obb
+mode: train
+model: yolo11n-obb-p2.yaml  # P2 检测层 ★★★★★
+data: dataset_yolo/fold_0/data.yaml
+
+# ── 训练策略 ──
+epochs: 500
+batch: 96
+imgsz: 800  # 更大输入尺寸对小目标有帮助
+workers: 24
+device: 0,1,2,3,4,5,6,7
+
+# ── 优化器 ──
+optimizer: auto
+lr0: 0.01
+lrf: 0.01
+momentum: 0.937
+weight_decay: 0.0005
+warmup_epochs: 3.0
+warmup_momentum: 0.8
+warmup_bias_lr: 0.1
+cos_lr: true  # Cosine LR ★★★★☆
+
+# ── 训练策略 ──
+close_mosaic: 15  # P2 层受益于更长的 mosaic
+amp: true
+multi_scale: 0.1  # 多尺度训练 ★★★★☆
+seed: 42
+deterministic: true
+patience: 100
+
+# ── Loss gains ──
+box: 7.5
+cls: 0.5
+cls_pw: 0.5   # 类别权重 (长尾) ★★★★★
+dfl: 1.5
+angle: 1.0
+
+# ── 数据增强 (遥感场景优化) ──
+mosaic: 1.0
+mosaic9: 0.2         # 3×3 mosaic ★★★★☆
+mixup: 0.1           # 适度 MixUp ★★★★☆
+cutmix: 0.0
+hsv_h: 0.015
+hsv_s: 0.3           # 遥感影像色彩相对一致
+hsv_v: 0.2
+degrees: 0.0
+translate: 0.1
+scale: 0.5
+shear: 0.0
+perspective: 0.0
+flipud: 0.0
+fliplr: 0.5
+
+# ── 增强 Loss ──
+use_focal: false       # Focal Loss ★★★★★
+focal_gamma: 2.0
+focal_alpha: 0.25
+
+use_wise_iou: false    # Wise-IoU (实验性)
+use_kld_angle: false   # KLD Angle (实验性)
+use_slide_loss: false  # Slide Loss (实验性)
+use_scale_aware: false # Scale-aware Weight (实验性)
