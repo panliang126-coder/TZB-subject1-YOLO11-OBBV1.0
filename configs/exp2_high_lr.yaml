@@ -1,0 +1,69 @@
+# Exp2: 高学习率 + Warm Restart (从 best.pt 加载权重)
+# 目标: 验证更高 lr 能否突破当前收敛瓶颈
+# 当前模型 ep1000 时 lr 已衰减至 ~0.0003，Cosine 重启给模型第二波优化空间
+# 基线: enhanced_fold0_1000ep-10 (mAP50-95=0.373)
+# 预计收益: +2~4 mAP50-95 (500 extra epochs)
+# GPU: 4,5,6,7 (4卡并行，与 Exp1 共享 8×A100)
+
+task: obb
+mode: train
+model: /data/work1/panliang/2026/00_TZB_game/YOLOv11/runs/enhanced_fold0_1000ep-10/weights/best.pt
+data: dataset_yolo/fold_0/data.yaml
+
+# ── 训练策略 ──
+epochs: 500
+batch: 96
+imgsz: 800
+workers: 24
+device: 0,1,2,3,4,5,6,7
+seed: 42
+deterministic: true
+
+# ── 优化器 (显式 MuSGD，不 auto → 才能自定义 lr) ──
+optimizer: MuSGD       # ← 关键! auto 会覆盖 lr0
+lr0: 0.02              # ← 关键修改: 0.01→0.02, 更高起始 lr
+lrf: 0.001             # ← 关键修改: 0.01→0.001, 更充分衰减
+momentum: 0.9          # auto 默认值
+weight_decay: 0.0005
+warmup_epochs: 3.0
+warmup_momentum: 0.8
+warmup_bias_lr: 0.1    # ← 关键修改: auto 强制 0.0, 显式设为 0.1
+cos_lr: true
+nbs: 64
+
+# ── 训练策略 ──
+close_mosaic: 30   # ← 关键修改: 15→30
+amp: true
+multi_scale: 0.1
+patience: 100
+
+# ── Loss gains ──
+box: 7.5
+cls: 0.5
+cls_pw: 0.5
+dfl: 1.5
+angle: 1.0
+
+# ── 数据增强 (保持与原实验一致) ──
+mosaic: 1.0
+mosaic9: 0.2
+mixup: 0.1
+cutmix: 0.0
+copy_paste: 0.0
+hsv_h: 0.015
+hsv_s: 0.3
+hsv_v: 0.2
+degrees: 0.0
+translate: 0.1
+scale: 0.5
+shear: 0.0
+perspective: 0.0
+flipud: 0.0
+fliplr: 0.5
+
+# ── Loss 开关 (暂不开启，独立验证高 lr 效果) ──
+use_focal: false
+use_wise_iou: false
+use_kld_angle: false
+use_slide_loss: false
+use_scale_aware: false

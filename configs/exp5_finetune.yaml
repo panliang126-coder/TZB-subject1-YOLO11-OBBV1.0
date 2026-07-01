@@ -1,0 +1,55 @@
+# Exp5: 精调 Exp2 best checkpoint
+# 低lr精调, 榨取最后收敛收益
+# Exp2 best: mAP50-95=0.3877 @ ep360, lr当时约0.01
+
+task: obb
+mode: train
+model: /data/work1/panliang/2026/00_TZB_game/YOLOv11/runs/exp2_high_lr_v4/weights/best.pt
+data: dataset_yolo/fold_0/data.yaml
+
+epochs: 200
+batch: 48
+imgsz: 800
+workers: 12
+device: 4,5,6,7
+seed: 42
+deterministic: true
+
+optimizer: MuSGD
+lr0: 0.005
+lrf: 0.001
+momentum: 0.9
+weight_decay: 0.0005
+warmup_epochs: 2.0
+warmup_momentum: 0.8
+warmup_bias_lr: 0.1
+cos_lr: true
+nbs: 64
+
+close_mosaic: 30
+amp: true
+multi_scale: 0.1
+patience: 100
+
+box: 7.5
+cls: 0.5
+cls_pw: 0.5
+dfl: 1.5
+angle: 1.0
+
+mosaic: 1.0
+mosaic9: 0.2
+mixup: 0.1
+hsv_h: 0.015
+hsv_s: 0.3
+hsv_v: 0.2
+degrees: 0.0
+translate: 0.1
+scale: 0.5
+shear: 0.0
+perspective: 0.0
+flipud: 0.0
+fliplr: 0.5
+
+use_focal: false
+use_wise_iou: false

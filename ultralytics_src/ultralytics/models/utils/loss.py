@@ -111,7 +111,7 @@ class DETRLoss(nn.Module):
             if num_gts and self.vfl:
                 loss_cls = self.vfl(pred_scores, gt_scores, one_hot)
             else:
-                loss_cls = self.fl(pred_scores, one_hot.float())
+                loss_cls = self.fl(pred_scores, one_hot.float()).mean(1).sum()
             loss_cls /= max(num_gts, 1) / nq
         else:
             loss_cls = nn.BCEWithLogitsLoss(reduction="none")(pred_scores, gt_scores).mean(1).sum()  # YOLO CLS loss

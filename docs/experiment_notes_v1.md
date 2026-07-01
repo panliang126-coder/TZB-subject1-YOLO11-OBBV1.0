@@ -241,6 +241,52 @@ Enhanced 针对遥感小目标、长尾类别专门优化。
 
 ---
 
+### 2.5 预期最终效果
+
+基于之前 500 epoch enhanced fold0 的训练经验：
+
+| 指标 | 500 epoch | 1000 epoch (预估) |
+|------|-----------|-------------------|
+| mAP50 | ~0.50 | **0.55+** |
+| mAP50-95 | ~0.35 | **0.40+** |
+| 最佳 epoch | ~450 | ~800-900 |
+
+增强配置 vs Baseline 的预期提升：
+
+| 对比项 | Baseline (640) | Enhanced-P2 (800) | 提升原因 |
+|--------|---------------|-------------------|----------|
+| 小目标检测 | 弱 | **强** | P2 头 200×200 特征图 |
+| 长尾类别 | 偏常见类 | **均衡** | cls_pw=0.5 类别权重 |
+| 收敛速度 | 较慢 | **较快** | Cos LR + warmup |
+| 泛化能力 | 一般 | **更好** | Mosaic9 + MixUp |
+
+---
+
+### 2.6 当前实验状态
+
+| 实验 | 目录 | 状态 |
+|------|------|------|
+| enhanced fold0 | `runs/enhanced_fold0_1000ep-10` | 🔄 训练中 (epoch 31/1000, ~40s/ep) |
+| 预计完成 | — | 6/28 晚 ~19:30 |
+
+监控命令：
+
+```bash
+# 训练日志
+tail -f /tmp/claude-1000/*/tasks/b571m53ty.output
+
+# 指标曲线
+python plot_metrics.py runs/enhanced_fold0_1000ep-10/results.csv --watch 120
+
+# Test 评估结果
+cat runs/enhanced_fold0_1000ep-10/test_metrics.csv
+
+# Profiling (按需开启)
+python train.py --enhanced --profile-loader
+```
+
+---
+
 ### 2.5 Loss 函数说明
 
 | Loss | 公式 | 作用 |

@@ -83,7 +83,7 @@ class FocalLoss(nn.Module):
             self.alpha = self.alpha.to(device=pred.device, dtype=pred.dtype)
             alpha_factor = label * self.alpha + (1 - label) * (1 - self.alpha)
             loss *= alpha_factor
-        return loss.mean(1).sum()
+        return loss  # per-element, compatible with BCE loss normalization
 
 
 class DFLoss(nn.Module):
@@ -1260,8 +1260,8 @@ class v8OBBLoss(v8DetectionLoss):
 
         # DFL loss (same as RotatedBboxLoss)
         if self.bbox_loss.dfl_loss:
-            target_ltrb = rbox2dist(anchor_points, target_bboxes, target_bboxes[..., 4:5],
-                                     self.bbox_loss.dfl_loss.reg_max - 1)
+            target_ltrb = rbox2dist(target_bboxes[..., :4], anchor_points, target_bboxes[..., 4:5],
+                                     reg_max=self.bbox_loss.dfl_loss.reg_max - 1)
             loss_dfl = self.bbox_loss.dfl_loss(
                 pred_distri[fg_mask].view(-1, self.bbox_loss.dfl_loss.reg_max),
                 target_ltrb[fg_mask],

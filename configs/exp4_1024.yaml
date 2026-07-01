@@ -1,0 +1,61 @@
+# Exp4: 高分辨率 1024 + Exp2高lr配置
+# 理由: Exp2验证了high_lr+warm_restart有效(+0.014)
+#       分辨率800→1024带来60%更多像素, 确定性帮助小目标
+#       不用Focal(Exp3证明拖慢收敛)
+
+task: obb
+mode: train
+model: /data/work1/panliang/2026/00_TZB_game/YOLOv11/runs/enhanced_fold0_1000ep-10/weights/best.pt
+data: dataset_yolo/fold_0/data.yaml
+
+epochs: 500
+batch: 32
+imgsz: 1024
+workers: 8
+device: 4,5,6,7
+seed: 42
+deterministic: true
+
+# ── 优化器 ──
+optimizer: MuSGD
+lr0: 0.02
+lrf: 0.001
+momentum: 0.9
+weight_decay: 0.0005
+warmup_epochs: 3.0
+warmup_momentum: 0.8
+warmup_bias_lr: 0.1
+cos_lr: true
+nbs: 64
+
+# ── 训练策略 ──
+close_mosaic: 30
+amp: true
+multi_scale: 0.1
+patience: 100
+
+# ── Loss gains ──
+box: 7.5
+cls: 0.5
+cls_pw: 0.5
+dfl: 1.5
+angle: 1.0
+
+# ── 数据增强 ──
+mosaic: 1.0
+mosaic9: 0.2
+mixup: 0.1
+hsv_h: 0.015
+hsv_s: 0.3
+hsv_v: 0.2
+degrees: 0.0
+translate: 0.1
+scale: 0.5
+shear: 0.0
+perspective: 0.0
+flipud: 0.0
+fliplr: 0.5
+
+# ── Loss (不用Focal/WiseIoU) ──
+use_focal: false
+use_wise_iou: false

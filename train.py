@@ -100,6 +100,7 @@ def main():
     parser.add_argument('--cache', type=str, default=None, choices=['ram', 'disk'], help='缓存图像到 ram/disk 加速训练')
     parser.add_argument('--profile-loader', action='store_true', default=None, help='开启 DataLoader Profiling')
     parser.add_argument('--resume', action='store_true', help='从检查点恢复')
+    parser.add_argument('--close-mosaic', type=int, default=None, help='关闭 Mosaic 增强的 epoch 数 (0=永不关闭)')
 
     # ── 增强开关 (Ablation 用) ──
     loss_group = parser.add_argument_group('Loss 优化')
@@ -177,6 +178,10 @@ def main():
     if args_parsed.mixup is not None:
         args['mixup'] = args_parsed.mixup
 
+    # close_mosaic 覆盖（0 也是有效值，用 is not None 判断）
+    if args_parsed.close_mosaic is not None:
+        args['close_mosaic'] = args_parsed.close_mosaic
+
     # 实验名称
     if args_parsed.name:
         args['name'] = args_parsed.name
@@ -229,6 +234,7 @@ def main():
     print(f"    Class PW:      {args.get('cls_pw', 0)}")
     print(f"    Cos LR:        {args['cos_lr']}")
     print(f"    Multi-scale:   {args.get('multi_scale', 0)}")
+    print(f"    Close Mosaic:  {args.get('close_mosaic', '未设置')}")
     print("=" * 70)
 
     # ── 断点续训 ──

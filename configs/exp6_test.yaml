@@ -1,0 +1,49 @@
+# Exp6: 保持原lr续训50epoch测试
+# 原训练ep1000时lr≈0.0003, 用MuSGD设lr0=0.0003, cos_lr平缓
+
+task: obb
+mode: train
+model: /data/work1/panliang/2026/00_TZB_game/YOLOv11/runs/enhanced_fold0_1000ep-10/weights/best.pt
+data: dataset_yolo/fold_0/data.yaml
+
+epochs: 50
+batch: 96
+imgsz: 800
+workers: 24
+device: 0,1,2,3,4,5,6,7
+seed: 42
+deterministic: true
+
+optimizer: MuSGD
+lr0: 0.0003
+lrf: 0.5
+momentum: 0.9
+weight_decay: 0.0005
+warmup_epochs: 1.0
+warmup_momentum: 0.8
+warmup_bias_lr: 0.0001
+cos_lr: true
+nbs: 64
+
+close_mosaic: 30
+amp: true
+patience: 100
+
+box: 7.5
+cls: 0.5
+cls_pw: 0.5
+dfl: 1.5
+angle: 1.0
+
+mosaic: 1.0
+mosaic9: 0.2
+mixup: 0.1
+hsv_h: 0.015
+hsv_s: 0.3
+hsv_v: 0.2
+translate: 0.1
+scale: 0.5
+fliplr: 0.5
+
+use_focal: false
+use_wise_iou: false

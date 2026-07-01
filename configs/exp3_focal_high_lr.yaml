@@ -1,0 +1,70 @@
+# Exp3: Focal Loss (gamma=1.0, 减半) + 高lr + Warm Restart
+# 从 enhanced_fold0_1000ep-10 的 best.pt 热启动
+# Exp1 教训: gamma=2.0 太激进, cls_loss 压太狠导致分类学不动
+# Exp2 教训: 高lr warm restart 纯收敛优化, 不解决长尾
+# Exp3 = Exp1的Focal思路 + Exp2的高lr思路, 叠加收益
+# 预计: mAP50-95 0.39~0.42
+
+task: obb
+mode: train
+model: /data/work1/panliang/2026/00_TZB_game/YOLOv11/runs/enhanced_fold0_1000ep-10/weights/best.pt
+data: dataset_yolo/fold_0/data.yaml
+
+epochs: 500
+batch: 96
+imgsz: 800
+workers: 24
+device: 0,1,2,3,4,5,6,7
+seed: 42
+deterministic: true
+
+# ── 优化器 (显式 MuSGD, 高lr) ──
+optimizer: MuSGD
+lr0: 0.02
+lrf: 0.001
+momentum: 0.9
+weight_decay: 0.0005
+warmup_epochs: 3.0
+warmup_momentum: 0.8
+warmup_bias_lr: 0.1
+cos_lr: true
+nbs: 64
+
+# ── 训练策略 ──
+close_mosaic: 30
+amp: true
+multi_scale: 0.1
+patience: 100
+
+# ── Loss gains ──
+box: 7.5
+cls: 0.5
+cls_pw: 0.5
+dfl: 1.5
+angle: 1.0
+
+# ── 数据增强 ──
+mosaic: 1.0
+mosaic9: 0.2
+mixup: 0.1
+cutmix: 0.0
+copy_paste: 0.0
+hsv_h: 0.015
+hsv_s: 0.3
+hsv_v: 0.2
+degrees: 0.0
+translate: 0.1
+scale: 0.5
+shear: 0.0
+perspective: 0.0
+flipud: 0.0
+fliplr: 0.5
+
+# ── Focal Loss (gamma减半) ──
+use_focal: true
+focal_gamma: 1.0
+focal_alpha: 0.25
+use_wise_iou: false
+use_kld_angle: false
+use_slide_loss: false
+use_scale_aware: false
