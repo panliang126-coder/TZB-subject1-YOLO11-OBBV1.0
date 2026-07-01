@@ -1,0 +1,10 @@
+epoch,Data Loading,Mosaic,RandomAffine,CopyPaste,MixUp,HSV,Flip,Format,Collate+Transfer,Forward,Loss,Backward,Optimizer,DDP Wait
+1,0,0,0,0,0,0,0,0,115.82,8847.08,0,7424.34,73.12,0
+epoch,Data Loading,Mosaic,RandomAffine,CopyPaste,MixUp,HSV,Flip,Format,Collate+Transfer,Forward,Loss,Backward,Optimizer,DDP Wait
+1,0,0,0,0,0,0,0,0,62.27,9851.54,0,7289.62,75.10,0
+1,0,0,0,0,0,0,0,0,282.52,8574.85,0,6897.79,72.32,0
+1,0,0,0,0,0,0,0,0,127.39,6031.35,0,7306.29,73.08,0
+1,0,0,0,0,0,0,0,0,104.70,8967.37,0,7443.54,72.92,0
+1,0,0,0,0,0,0,0,0,526.26,8265.91,0,7069.83,72.10,0
+1,0,0,0,0,0,0,0,0,326.18,7998.06,0,7337.26,73.95,0
+1,0,0,0,0,0,0,0,0,3.13,5393.06,0,7978.34,78.99,0

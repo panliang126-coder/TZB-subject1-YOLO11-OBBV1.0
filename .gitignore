@@ -2,11 +2,9 @@
 dataset/
 dataset_yolo/
 
-# Training outputs
-runs/
-
-# Model weights
-*.pt
+# Individual large model files (>100MB GitHub limit) 
+yolo26x.pt
+models/yolo11x.pt
 
 # Cache & logs
 *.cache
